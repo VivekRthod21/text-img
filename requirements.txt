@@ -1,0 +1,12 @@
+openai ==1.76.2
+streamlit
+torch
+diffusers
+transformers
+accelerate
+controlnet_aux
+opencv-python
+Pillow
+xformers
+ 
+ 
