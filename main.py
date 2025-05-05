@@ -53,33 +53,29 @@ if mode == 'text to image':
     st.title(" Text to Image Generator")
     prompt = st.text_input("Enter your image description:")
     
-    styles = ["Ghibli art","realistic","3D render", "sketch","cartoon","anime","oil painting"]
+    styles = ["realistic", "cartoon", "anime", "oil painting", "sketch", "3D render", "Ghibli art"]
     st.write("Choose image styles:")
-    selected_styles = []
-
-    for style in styles:
-        if st.checkbox(style, key=style):
-            selected_styles.append(style)
-
-    submit = st.button("Generate Images")
+    
+    style = st.selectbox(
+        "Choose an image style",
+        ["", "realistic", "cartoon", "anime", "cyberpunk", "pixel art", "watercolor", "oil painting", "sketch", "3D render"]
+    )
+    submit = st.button("Generate Image")
 
     if submit and prompt:
-        if len(selected_styles) >= 3:
-            st.error("Please select 3 styles to generate images.")
-        else:
-            try:
-                with st.spinner("Generating images..."):
-                    image_urls = []
-                    for style in selected_styles:
-                        image_urls += generate_image(prompt, style, "256x256")
-                    
-                    # Display side by side
-                    cols = st.columns(3)
-                    for i in range(3):
-                        with cols[i]:
-                            st.image(image_urls[i], caption=f"{selected_styles[i]} style")
-            except Exception as e:
-                st.error(f"Error: {e}")
+        try:
+            with st.spinner("Generating image..."):
+                
+                image_urls = generate_image(prompt, style, "256x256")
+                cols = st.columns(3)
+                for i in range(3):
+                    with cols[i]:
+                        st.image(image_urls[i], caption=f"Image {i+1}")
+                        
+         # st.image(image_url, caption=f"Generated Image ({style or 'default'} style)", use_column_width=True)
+        except Exception as e:
+            st.error(f"Error: {e}")
+    
 elif mode == 'image to image':
     
     st.title("Image to Image generator")
