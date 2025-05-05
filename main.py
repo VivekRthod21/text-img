@@ -81,29 +81,28 @@ if mode == 'text to image':
             except Exception as e:
                 st.error(f"Error: {e}")
 elif mode == 'image to image':
-    #st.set_page_config(page_title="Image to Anime using ControlNet", layout="centered")
-
-    st.title("Image to image generator")
+    
+    st.title("Image to Image generator")
     st.markdown("Upload an image and describe the style you want (e.g., 'anime cat with big eyes').")
-
+ 
     # Upload image and input prompt
     uploaded_file = st.file_uploader("Upload Image", type=["jpg", "png", "jpeg"])
     prompt = st.text_input("Enter your prompt", ) #value="anime style cat with big eyes"
     submit_button=st.button('generate image')
     if submit_button and uploaded_file and prompt:
         with st.spinner("Generating..."):
-
+ 
             # Load and display uploaded image
             image = Image.open(uploaded_file).convert("RGB")
-            st.subheader("📸 Uploaded Image")
-            st.image(image, caption="Original Uploaded Image")
-
+            uploaded_resized = image.resize((256, 256))
+            # st.image(image, caption="Original Uploaded Image")
+ 
             # Convert to Canny edges
             canny_image = image_to_canny(image)
-
+ 
             # Load ControlNet model
             controlnet = ControlNetModel.from_pretrained(
-                "lllyasviel/sd-controlnet-canny", 
+                "lllyasviel/sd-controlnet-canny",
                 torch_dtype=torch.float32  # For CPU use
             )
             pipe = StableDiffusionControlNetPipeline.from_pretrained(
@@ -112,27 +111,22 @@ elif mode == 'image to image':
                 torch_dtype=torch.float32
             )
             pipe.scheduler = UniPCMultistepScheduler.from_config(pipe.scheduler.config)
-
+ 
             # Move model to CPU
             pipe = pipe.to("cpu")
-
+ 
             # Generate the image
             result = pipe(prompt, image=canny_image, num_inference_steps=5)
             generated_image = result.images[0]
+            generated_resized = generated_image.resize((256, 256))
 
-            # Save and display output
-            os.makedirs("output", exist_ok=True)
-            out_path = os.path.join("output", "generated.png")
-            generated_image.save(out_path)
-
-            # Show result
-            st.subheader("🎨 Generated Image")
-            st.image(generated_image, caption="Generated Image")
-            st.success("Done!")
-
-            # Download option
-            with open(out_path, "rb") as file:
-                st.download_button("Download Image", file, "anime_output.png", "image/png")
+            st.subheader("📸 Uploaded vs 🎨 Generated Image")
+            col1, col2 = st.columns(2)
+ 
+            with col1:
+                st.image(uploaded_resized, caption="Original Uploaded")
+            with col2:
+                st.image(generated_resized, caption="Generated Image")
             
             
  
