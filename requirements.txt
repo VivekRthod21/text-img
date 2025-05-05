@@ -8,5 +8,6 @@ controlnet_aux
 opencv-python
 Pillow
 xformers
+langsmith
  
  
