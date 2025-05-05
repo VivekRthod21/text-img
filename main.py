@@ -28,7 +28,7 @@ def image_to_canny(pil_img):
 #st.set_page_config(page_title="AI Art Generator", layout="centered")
 load_dotenv()
 # st.image(image="aibg.jpeg")
-st.title("Welcome to image converter")
+st.title("Hello, Welcome to image converter")
 # Set your OpenAI API key
 # openai.api_key = os.getenv("OPENAI_API_KEY")
 
