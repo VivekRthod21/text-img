@@ -38,12 +38,12 @@ mode=st.selectbox('What you want',['Select Mode','text to image','image to image
 
 if mode == 'text to image':
         # Function to generate image
-    def generate_image(prompt: str, style: str, image_size: str):
+    def generate_image(prompt: str, style: str):
         styled_prompt = f"{prompt}, in {style} style" if style else prompt
         response = openai.images.generate(
             prompt=styled_prompt,
-            n=1,
-            size=image_size,
+            n=3, #num of img
+            size="256x256",
             response_format="url"
         )
         return response.data[0].url
@@ -56,14 +56,14 @@ if mode == 'text to image':
         "Choose an image style",
         ["", "realistic", "cartoon", "anime", "cyberpunk", "pixel art", "watercolor", "oil painting", "sketch", "3D render"]
     )
-    image_size = st.selectbox("Choose image size", ["256x256", "512x512", "1024x1024"])
+    # image_size = st.selectbox("Choose image size", ["256x256", "512x512", "1024x1024"])
     submit = st.button("Generate Image")
 
     if submit and prompt:
         try:
             with st.spinner("Generating image..."):
-                image_url = generate_image(prompt, style, image_size)
-                st.image(image_url, caption=f"Generated Image ({style or 'default'} style)", use_column_width=True)
+                image_url = generate_image(prompt, style,"256x256")
+                st.image(image_url, caption=f"Generated Image ({style or 'default'} style)")
         except Exception as e:
             st.error(f"Error: {e}")
             
@@ -84,7 +84,7 @@ elif mode == 'image to image':
             # Load and display uploaded image
             image = Image.open(uploaded_file).convert("RGB")
             st.subheader("📸 Uploaded Image")
-            st.image(image, caption="Original Uploaded Image", use_column_width=True)
+            st.image(image, caption="Original Uploaded Image")
 
             # Convert to Canny edges
             canny_image = image_to_canny(image)
@@ -115,7 +115,7 @@ elif mode == 'image to image':
 
             # Show result
             st.subheader("🎨 Generated Image")
-            st.image(generated_image, caption="Generated Image", use_column_width=True)
+            st.image(generated_image, caption="Generated Image")
             st.success("Done!")
 
             # Download option
