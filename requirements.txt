@@ -9,5 +9,5 @@ opencv-python
 Pillow
 xformers
 langsmith
- 
+dotenv 
  
