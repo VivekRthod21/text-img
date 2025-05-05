@@ -53,19 +53,76 @@ if mode == 'text to image':
     st.title(" Text to Image Generator")
     prompt = st.text_input("Enter your image description:")
     
+       
+    # Style options
     styles = ["realistic", "cartoon", "anime", "cyberpunk", "pixel art", "watercolor", "oil painting", "sketch", "3D render"]
-    
-    style = st.selectbox(
-        "Choose an image style",
-        ["", "realistic", "cartoon", "anime", "cyberpunk", "pixel art", "watercolor", "oil painting", "sketch", "3D render"]
+    style = st.selectbox("Choose an image style", [""] + styles)
+
+    # Prompt templates for styles
+    style_prompts = {
+    "realistic": (
+        "An ultra high-resolution, photo-realistic image of {}, captured with a full-frame DSLR camera "
+        "using a 50mm lens. Natural lighting, cinematic composition, soft shadows, realistic textures, "
+        "depth of field, and lifelike environmental details. True-to-life color balance and reflections."
+    ),
+
+    "cartoon": (
+        "A vibrant and expressive cartoon-style illustration of {}, featuring bold outlines, exaggerated features, "
+        "and a playful color palette. Clear character design, smooth shading, and a clean, flat aesthetic suitable "
+        "for animated series or comic books."
+    ),
+
+    "anime": (
+        "A high-quality anime-style artwork of {}, with dynamic posing, dramatic lighting, and expressive facial features. "
+        "Includes a detailed background in the style of modern anime, vibrant colors, cel-shading, and subtle glow effects. "
+        "Inspired by Studio Ghibli and Makoto Shinkai aesthetics."
+    ),
+
+    "cyberpunk": (
+        "A futuristic cyberpunk-themed depiction of {}, set in a neon-lit urban environment. Rich in sci-fi elements like "
+        "holograms, cybernetic enhancements, rainy streets, reflective surfaces, and glowing signs. A moody, high-contrast "
+        "color palette with deep purples, blues, and electric neon pinks."
+    ),
+
+    "pixel art": (
+        "A retro 8-bit pixel art rendition of {}, with carefully crafted low-resolution details. Classic video game aesthetic, "
+        "blocky textures, simplified shading, and a nostalgic color palette. Pixel-perfect outlines and sprite-style design."
+    ),
+
+    "watercolor": (
+        "A delicate and expressive watercolor painting of {}, with fluid brush strokes, soft gradients, and subtle color blending. "
+        "The image should feature paper texture, muted tones, and natural imperfections, evoking a hand-painted look "
+        "with an airy, artistic feel."
+    ),
+
+    "oil painting": (
+        "A traditional oil painting of {}, in the style of Renaissance or Baroque fine art. Rich, layered brushwork, "
+        "realistic shadows and highlights, and a warm, earthy color palette. Classical composition and texture detail, "
+        "with visible canvas strokes and chiaroscuro lighting."
+    ),
+
+    "sketch": (
+        "A highly detailed pencil sketch of {}, drawn on textured paper. Includes fine linework, crosshatching, and shading to "
+        "emphasize depth and contrast. Monochrome tones with subtle smudging, resembling a technical or anatomical illustration."
+    ),
+
+    "3D render": (
+        "A professional 3D render of {}, modeled with intricate geometry and high-resolution textures. Realistic lighting setup with "
+        "HDRI reflections, soft shadows, and physically accurate materials. Rendered in a photorealistic engine such as Blender Cycles "
+        "or Unreal Engine."
     )
+    }
+
+    # Submit button
     submit = st.button("Generate Image")
 
     if submit and prompt:
         try:
             with st.spinner("Generating image..."):
+                # Apply style-specific prompt
+                full_prompt = style_prompts.get(style, "{}").format(prompt)
                 
-                image_urls = generate_image(prompt, style, "256x256")
+                image_urls = generate_image(full_prompt, style, "256x256")
                 cols = st.columns(3)
                 for i in range(3):
                     with cols[i]:
