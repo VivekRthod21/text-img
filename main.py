@@ -28,7 +28,7 @@ def image_to_canny(pil_img):
 #st.set_page_config(page_title="AI Art Generator", layout="centered")
 load_dotenv()
 # st.image(image="aibg.jpeg")
-st.title("Hello, Welcome to image converter")
+st.title("Welcome to image converter")
 # Set your OpenAI API key
 # openai.api_key = os.getenv("OPENAI_API_KEY")
 
@@ -44,7 +44,7 @@ if mode == 'text to image':
             prompt=styled_prompt,
             n=3, #num of img
             size="256x256",
-            model="dall-e-2"
+            model="dall-e-2",
             response_format="url"
         )
         return [img_data.url for img_data in response.data]
