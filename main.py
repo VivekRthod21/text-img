@@ -38,7 +38,7 @@ mode=st.selectbox('What you want',['Select Mode','text to image','image to image
 
 if mode == 'text to image':
         # Function to generate image
-    def generate_image(prompt: str, style: str):
+    def generate_image(prompt: str, style: str,image_size: str):
         styled_prompt = f"{prompt}, in {style} style" if style else prompt
         response = openai.images.generate(
             prompt=styled_prompt,
