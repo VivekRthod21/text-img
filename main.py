@@ -54,7 +54,6 @@ if mode == 'text to image':
     prompt = st.text_input("Enter your image description:")
     
     styles = ["realistic", "cartoon", "anime", "cyberpunk", "pixel art", "watercolor", "oil painting", "sketch", "3D render"]
-    st.write("Choose image styles:")
     
     style = st.selectbox(
         "Choose an image style",
