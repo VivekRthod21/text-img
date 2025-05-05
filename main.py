@@ -44,30 +44,42 @@ if mode == 'text to image':
             prompt=styled_prompt,
             n=3, #num of img
             size="256x256",
+            model="dall-e-2"
             response_format="url"
         )
-        return response.data[0].url
+        return [img_data.url for img_data in response.data]
 
     # Streamlit UI
     st.title(" Text to Image Generator")
-
     prompt = st.text_input("Enter your image description:")
-    style = st.selectbox(
-        "Choose an image style",
-        ["", "realistic", "cartoon", "anime", "cyberpunk", "pixel art", "watercolor", "oil painting", "sketch", "3D render"]
-    )
-    # image_size = st.selectbox("Choose image size", ["256x256", "512x512", "1024x1024"])
-    submit = st.button("Generate Image")
+    
+    styles = ["Ghibli art","realistic","3D render", "sketch","cartoon","anime","oil painting"]
+    st.write("Choose image styles:")
+    selected_styles = []
+
+    for style in styles:
+        if st.checkbox(style, key=style):
+            selected_styles.append(style)
+
+    submit = st.button("Generate Images")
 
     if submit and prompt:
-        try:
-            with st.spinner("Generating image..."):
-                image_url = generate_image(prompt, style,"256x256")
-                st.image(image_url, caption=f"Generated Image ({style or 'default'} style)")
-        except Exception as e:
-            st.error(f"Error: {e}")
-            
-        
+        if len(selected_styles) >= 3:
+            st.error("Please select 3 styles to generate images.")
+        else:
+            try:
+                with st.spinner("Generating images..."):
+                    image_urls = []
+                    for style in selected_styles:
+                        image_urls += generate_image(prompt, style, "256x256")
+                    
+                    # Display side by side
+                    cols = st.columns(3)
+                    for i in range(3):
+                        with cols[i]:
+                            st.image(image_urls[i], caption=f"{selected_styles[i]} style")
+            except Exception as e:
+                st.error(f"Error: {e}")
 elif mode == 'image to image':
     #st.set_page_config(page_title="Image to Anime using ControlNet", layout="centered")
 
